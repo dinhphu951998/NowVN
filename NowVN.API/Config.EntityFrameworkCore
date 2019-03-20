@@ -1,0 +1,5 @@
+﻿
+Scaffold-DbContext "Server=.;Database=NowVNSimulator;Trusted_Connection=True;user id=sa,password=zaQ@1234" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+
+--install EF Core
+
