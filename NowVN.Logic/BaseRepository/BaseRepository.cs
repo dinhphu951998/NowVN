@@ -34,21 +34,32 @@ namespace NowVN.Framework.BaseRepository
 
         public void Add(T entity)
         {
-            _context.Set<T>().Add(entity);
-            _context.SaveChanges();
+            _context.Add(entity);
+            SaveChanges();
         }
 
         public void Delete(T entity)
         {
             _context.Set<T>().Remove(entity);
-            _context.SaveChanges();
+            SaveChanges();
         }
 
         public virtual void Update(T entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
-            _context.SaveChanges();
+            SaveChanges();
             //((Microsoft.EntityFrameworkCore.Infrastructure.IObjectContextAdapter)dbContext).ObjectContext.Detach(entity);
+        }
+
+        private void SaveChanges()
+        {
+            try
+            {
+                _context.SaveChanges();
+            }catch(NowVNException ex)
+            {
+                throw new NowVNException(ex);
+            }
         }
 
         public IEnumerable<T> GetAll()

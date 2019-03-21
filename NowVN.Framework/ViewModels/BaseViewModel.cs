@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NowVN.Framework.Models
+namespace NowVN.Framework.ViewModels
 {
-    public class BaseViewModel
+    public partial class BaseViewModel
     {
         protected IMapper mapper {
             get {
@@ -15,7 +15,7 @@ namespace NowVN.Framework.Models
             }
         }
 
-        public TDestination ToViewModel<TSource, TDestination>(TSource source)
+        public TDestination ToEntity<TSource, TDestination>(TSource source)
         {
             return mapper.Map<TSource,TDestination>(source);
         }

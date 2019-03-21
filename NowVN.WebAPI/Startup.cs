@@ -19,8 +19,9 @@ using NowVN.Framework.Models;
 using NowVN.Framework.Helpers;
 using NowVN.Framework.ProductLogic;
 using NowVN.Framework.CustomerLogic;
+using NowVN.Framework.ViewModels;
 
-namespace NowVN.API
+namespace NowVN.WebAPI
 {
     public class Startup
     {
@@ -41,10 +42,11 @@ namespace NowVN.API
             {
                 options.UseSqlServer(Configuration.GetConnectionString("NowVNConnectionString"));
             });
-
+            
             this.setupAuthentication(services);
             this.setupAutoMapper();
             this.setupDependencyInjection(services);
+            this.setupAuthorization(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,18 +73,15 @@ namespace NowVN.API
         {
             Mapper.Initialize(cfg =>
             {
-                //cfg.CreateMap<>();
+                cfg.CreateMap<Customer, UserRegisterdViewModel>();
+                cfg.CreateMap<UserRegisterdViewModel, Customer>();
             });
 
         }
 
         private void setupDependencyInjection(IServiceCollection services)
         {
-            var appSettingsSection = Configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettingsSection);
-            var appSettings = appSettingsSection.Get<AppSettings>();
-
-            services.AddSingleton<AppSettings>(appSettings);
+            //services.AddSingleton<AppSettings>(appSettings);
             services.AddSingleton<IConfiguration>(Configuration);
 
             services.AddScoped<IProductLogic, ProductLogic>();
@@ -118,6 +117,17 @@ namespace NowVN.API
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
+            });
+        }
+
+        private void setupAuthorization(IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Customer", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                });
             });
         }
     }

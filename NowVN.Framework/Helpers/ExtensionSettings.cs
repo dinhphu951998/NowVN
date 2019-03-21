@@ -9,12 +9,20 @@ namespace NowVN.Framework.Helpers
     public class ExtensionSettings
     {
         public IConfiguration configuration { get; private set; }
-        public AppSettings appSettings { get; private set; }
 
-        public ExtensionSettings(IConfiguration configuration, AppSettings appSettings)
+        public AppSettings appSettings
+        {
+            get
+            {
+                var appSettingsSection = this.configuration.GetSection("AppSettings");
+                var appSettings = appSettingsSection.Get<AppSettings>();
+                return appSettings;
+            }
+        }
+
+        public ExtensionSettings(IConfiguration configuration)
         {
             this.configuration = configuration;
-            this.appSettings = appSettings;
         }
     }
 }

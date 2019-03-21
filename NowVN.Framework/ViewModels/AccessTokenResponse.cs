@@ -12,7 +12,7 @@ namespace NowVN.Framework.ViewModels
 
         //public string Fullname { get; set; }
 
-        public string AccessTokenString { get; set; }
+        public string AccessToken { get; set; }
 
     }
 }

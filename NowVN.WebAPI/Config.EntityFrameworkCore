@@ -1,5 +1,11 @@
 ﻿
+--Scaffold
 Scaffold-DbContext "Server=.;Database=NowVNSimulator;Trusted_Connection=True;user id=sa,password=zaQ@1234" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
 
+--add property --force to overwrite exsisting files
+
 --install EF Core
+Install-Package Microsoft.EntityFrameworkCore.Tools
+
+
 

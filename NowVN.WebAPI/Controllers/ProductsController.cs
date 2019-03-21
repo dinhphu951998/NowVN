@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ using NowVN.Framework.Helpers;
 using NowVN.Framework.Models;
 using NowVN.Framework.ProductLogic;
 
-namespace NowVN.API.Controllers
+namespace NowVN.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -29,19 +30,29 @@ namespace NowVN.API.Controllers
             return this.Ok(products);
         }
 
-        //// GET: api/Products/5
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Product>> GetProduct(int id)
-        //{
-        //    var product = await _context.Product.FindAsync(id);
+        // GET: api/Products/5
+        [HttpGet("{id}")]
+        public ActionResult<Product> GetProduct(int id)
+        {
+            var product = productLogic.Find(id);
 
-        //    if (product == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (product == null)
+            {
+                return NotFound();
+            }
 
-        //    return product;
-        //}
+            return product;
+        }
+
+        // POST: api/Products
+        [HttpPost]
+        [Authorize]
+        public ActionResult<Product> PostProduct(Product product)
+        {
+            productLogic.Add(product);
+
+            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+        }
 
         //// PUT: api/Products/5
         //[HttpPut("{id}")]
@@ -73,15 +84,7 @@ namespace NowVN.API.Controllers
         //    return NoContent();
         //}
 
-        //// POST: api/Products
-        //[HttpPost]
-        //public async Task<ActionResult<Product>> PostProduct(Product product)
-        //{
-        //    _context.Product.Add(product);
-        //    await _context.SaveChangesAsync();
 
-        //    return CreatedAtAction("GetProduct", new { id = product.Id }, product);
-        //}
 
         //// DELETE: api/Products/5
         //[HttpDelete("{id}")]

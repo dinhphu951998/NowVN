@@ -23,24 +23,26 @@ namespace NowVN.Framework.Helpers
         {
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(extensionSettings.appSettings.SecretKey);
+            var key = Encoding.UTF8.GetBytes(extensionSettings.appSettings.SecretKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, customer.Id),
-                    new Claim(ClaimTypes.Name ,customer.Username)
+                    new Claim(ClaimTypes.UserId, customer.Id),
+                    new Claim(ClaimTypes.Username ,customer.Username)
                 }),
 
-                Expires = DateTime.UtcNow.AddDays(1),
+                Expires = DateTime.UtcNow.AddHours(extensionSettings.appSettings.TokenExpireTime),
 
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+
             };
 
             var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
         }
+        
 
     }
 }

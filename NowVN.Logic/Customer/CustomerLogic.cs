@@ -9,12 +9,14 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using NowVN.Framework.ViewModels;
 
 namespace NowVN.Framework.CustomerLogic
 {
     public interface ICustomerLogic : IBaseRepository<Customer>
     {
         string Authenticate(string username, string password);
+        Customer CreateCustomer(UserRegisterdViewModel userRegisterd);
     }
 
     public class CustomerLogic : BaseRepository<Customer>, ICustomerLogic
@@ -29,14 +31,33 @@ namespace NowVN.Framework.CustomerLogic
         public string Authenticate(string username, string password)
         {
             var customer = _context.Customer
-                                .SingleOrDefault(x => x.Username == username && x.Password == password);
+                                .SingleOrDefault(x => x.Username == username);
 
-            // return null if user not found
-            if (customer == null)
-                return null;
+            if(customer == null || !PasswordManipulation.VerifyPasswordHash(password, customer.PasswordHash, customer.PasswordSalt))
+            {
+                throw new NowVNException("Credentials are not valid");
+            }
 
             return jwtTokenProvider.createAccesstoken(customer);
 
+        }
+
+        public Customer CreateCustomer(UserRegisterdViewModel userRegisterd)
+        {
+            Customer customer = userRegisterd.ToEntity<UserRegisterdViewModel, Customer>(userRegisterd);
+
+            byte[] passwordSalt, passwordHash;
+
+            PasswordManipulation.CreatePasswordHash(userRegisterd.Password, out passwordHash, out passwordSalt);
+
+            customer.PasswordHash = passwordHash;
+            customer.PasswordSalt = passwordSalt;
+
+            customer.Id = Guid.NewGuid().ToString();
+
+            this.Add(customer);
+
+            return customer;
         }
     }
 }
