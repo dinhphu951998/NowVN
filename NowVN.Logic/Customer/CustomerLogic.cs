@@ -44,7 +44,7 @@ namespace NowVN.Framework.CustomerLogic
 
         public Customer CreateCustomer(UserRegisterdViewModel userRegisterd)
         {
-            Customer customer = userRegisterd.ToEntity<UserRegisterdViewModel, Customer>(userRegisterd);
+            Customer customer = userRegisterd.ToEntity<Customer>();
 
             byte[] passwordSalt, passwordHash;
 

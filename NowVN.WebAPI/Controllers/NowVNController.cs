@@ -18,14 +18,16 @@ namespace NowVN.WebAPI.Controllers
 
         protected dynamic ExecuteInMonitoring(Func<dynamic> function)
         {
+            dynamic result;
             try
             {
-                return function();
+                result =  function();
                 
             }catch(NowVNException ex)
             {
                 return BaseResponse.GetErrorResponse(ex.Message);
             }
+            return BaseResponse.GetSuccessResponse(result);
         } 
 
     }

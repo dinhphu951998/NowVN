@@ -20,6 +20,7 @@ using NowVN.Framework.Helpers;
 using NowVN.Framework.ProductLogic;
 using NowVN.Framework.CustomerLogic;
 using NowVN.Framework.ViewModels;
+using NowVN.Framework.ViewModels.EntityViewModel;
 
 namespace NowVN.WebAPI
 {
@@ -75,6 +76,9 @@ namespace NowVN.WebAPI
             {
                 cfg.CreateMap<Customer, UserRegisterdViewModel>();
                 cfg.CreateMap<UserRegisterdViewModel, Customer>();
+
+                cfg.CreateMap<Product, ProductViewModel>();
+                cfg.CreateMap<ProductViewModel, Product>();
             });
 
         }

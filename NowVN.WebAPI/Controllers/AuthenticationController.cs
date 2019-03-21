@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using NowVN.Framework.CustomerLogic;
 using NowVN.Framework.Helpers;
 using NowVN.Framework.ViewModels;
+using NowVN.Framework.ViewModels.EntityViewModel;
 
 namespace NowVN.WebAPI.Controllers
 {
@@ -28,13 +29,12 @@ namespace NowVN.WebAPI.Controllers
             {
                 var accessToken = customerLogic.Authenticate(userAuthentication.Username, userAuthentication.Password);
 
-                var tokenResponse = new AccessTokenResponse()
+                return new AccessTokenResponse()
                 {
                     Username = userAuthentication.Username,
                     AccessToken = accessToken
                 };
 
-                return BaseResponse.GetSuccessResponse(tokenResponse);
             });
         }
 
@@ -45,9 +45,7 @@ namespace NowVN.WebAPI.Controllers
         {
             return this.ExecuteInMonitoring( () =>
             {
-                var result = customerLogic.CreateCustomer(userRegisterd);
-                return BaseResponse.GetSuccessResponse(result);
-                
+                return customerLogic.CreateCustomer(userRegisterd).ToViewModel<CustomerViewModel>();
             });
         }
 

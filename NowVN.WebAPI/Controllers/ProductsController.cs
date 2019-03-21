@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using NowVN.Framework.Helpers;
 using NowVN.Framework.Models;
 using NowVN.Framework.ProductLogic;
+using NowVN.Framework.ViewModels;
+using NowVN.Framework.ViewModels.EntityViewModel;
 
 namespace NowVN.WebAPI.Controllers
 {
@@ -24,34 +26,36 @@ namespace NowVN.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
+        public async Task<dynamic> GetProduct(BasePagination paging)
         {
-            var products = this.productLogic.GetAll();
-            return this.Ok(products);
+            return ExecuteInMonitoring(() =>
+            {
+                var products = this.productLogic.GetProduct(paging);
+                return products.Select( p => p.ToViewModel<ProductViewModel>());
+            });
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public ActionResult<Product> GetProduct(int id)
+        public dynamic GetProduct(int id)
         {
-            var product = productLogic.Find(id);
-
-            if (product == null)
+            return ExecuteInMonitoring(() =>
             {
-                return NotFound();
-            }
-
-            return product;
+                return productLogic.Find(id)?.ToViewModel<ProductViewModel>();
+            });
         }
 
-        // POST: api/Products
-        [HttpPost]
-        [Authorize]
-        public ActionResult<Product> PostProduct(Product product)
+       [HttpPost]
+       [Authorize]
+        public dynamic AddNewProduct(Product product)
         {
-            productLogic.Add(product);
+            return ExecuteInMonitoring(() =>
+            {
+                product.CreatedTime = DateTime.UtcNow;
+                product.IsActive = true;
 
-            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+                return productLogic.Add(product)?.ToViewModel<ProductViewModel>();
+            });
         }
 
         //// PUT: api/Products/5

@@ -15,9 +15,9 @@ namespace NowVN.Framework.Models
             }
         }
 
-        public TDestination ToEntity<TSource, TDestination>(TSource source)
+        public TDestination ToViewModel<TDestination>()
         {
-            return mapper.Map<TSource, TDestination>(source);
+            return mapper.Map<TDestination>(this);
         }
     }
 }

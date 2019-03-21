@@ -9,7 +9,7 @@ namespace NowVN.Framework.BaseRepository
 {
     public interface IBaseRepository <T> where T : class
     {
-        void Add(T entity);
+        T Add(T entity);
         void Delete(T entity);
         void Update(T entity);
         IEnumerable<T> GetAll();
@@ -32,10 +32,11 @@ namespace NowVN.Framework.BaseRepository
             return result.AsQueryable();
         }
 
-        public void Add(T entity)
+        public T Add(T entity)
         {
             _context.Add(entity);
             SaveChanges();
+            return entity;
         }
 
         public void Delete(T entity)

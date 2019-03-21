@@ -20,7 +20,7 @@ namespace NowVN.Framework.Models
         public string Address { get; set; }
         public string Gender { get; set; }
         public DateTime? Birthdate { get; set; }
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
         public virtual ICollection<Order> Order { get; set; }
     }
