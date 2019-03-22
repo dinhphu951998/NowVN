@@ -11,7 +11,7 @@ namespace NowVN.Framework.BaseRepository
     {
         T Add(T entity);
         void Delete(T entity);
-        void Update(T entity);
+        void Update(T entity, T updatedEntity);
         IEnumerable<T> GetAll();
         T Find(int Id);
 
@@ -19,44 +19,45 @@ namespace NowVN.Framework.BaseRepository
 
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-        protected NowVNSimulatorContext _context { get; set; }
+        protected NowVNSimulatorContext dbContext { get; set; }
 
         public BaseRepository(NowVNSimulatorContext dbContext)
         {
-            this._context = dbContext;
+            this.dbContext = dbContext;
         }
 
         public IQueryable<T> Get(Func<T, bool> predicate)
         {
-            var result = _context.Set<T>().Where(predicate);
+            var result = dbContext.Set<T>().Where(predicate);
             return result.AsQueryable();
         }
 
         public T Add(T entity)
         {
-            _context.Add(entity);
+            dbContext.Add(entity);
             SaveChanges();
             return entity;
         }
 
         public void Delete(T entity)
         {
-            _context.Set<T>().Remove(entity);
+            dbContext.Set<T>().Remove(entity);
             SaveChanges();
         }
 
-        public virtual void Update(T entity)
+        public virtual void Update(T entity, T updatedEntity)
         {
-            _context.Entry(entity).State = EntityState.Modified;
+            var attachedEntry = dbContext.Entry(entity); 
+
+            attachedEntry.CurrentValues.SetValues(updatedEntity);
             SaveChanges();
-            //((Microsoft.EntityFrameworkCore.Infrastructure.IObjectContextAdapter)dbContext).ObjectContext.Detach(entity);
         }
 
         private void SaveChanges()
         {
             try
             {
-                _context.SaveChanges();
+                dbContext.SaveChanges();
             }catch(NowVNException ex)
             {
                 throw new NowVNException(ex);
@@ -65,7 +66,7 @@ namespace NowVN.Framework.BaseRepository
 
         public IEnumerable<T> GetAll()
         {
-            return _context.Set<T>().AsEnumerable();
+            return dbContext.Set<T>().AsEnumerable();
         }
 
         public virtual T Find(int Id)

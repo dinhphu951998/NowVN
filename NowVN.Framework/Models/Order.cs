@@ -11,9 +11,9 @@ namespace NowVN.Framework.Models
         }
 
         public int Id { get; set; }
-        public DateTime CreatedTime { get; set; }
+        public DateTime CreatedTime { get; set; } = DateTime.UtcNow;
         public double Total { get; set; }
-        public bool? IsAvailable { get; set; }
+        public bool? IsAvailable { get; set; } = true;
         public string Address { get; set; }
         public string Phone { get; set; }
         public string Fullname { get; set; }

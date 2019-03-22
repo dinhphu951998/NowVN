@@ -21,6 +21,9 @@ using NowVN.Framework.ProductLogic;
 using NowVN.Framework.CustomerLogic;
 using NowVN.Framework.ViewModels;
 using NowVN.Framework.ViewModels.EntityViewModel;
+using NowVN.Logic.OrderLogic;
+using NowVN.Logic.CartLogic;
+using NowVN.Logic.OrderDetailLogic;
 
 namespace NowVN.WebAPI
 {
@@ -79,6 +82,12 @@ namespace NowVN.WebAPI
 
                 cfg.CreateMap<Product, ProductViewModel>();
                 cfg.CreateMap<ProductViewModel, Product>();
+
+                cfg.CreateMap<OrderViewModel, Order>();
+                cfg.CreateMap<Order, OrderViewModel>();
+
+                cfg.CreateMap<OrderDetailsViewModel, OrderDetails>();
+                cfg.CreateMap<OrderDetails, OrderDetailsViewModel>();
             });
 
         }
@@ -88,11 +97,17 @@ namespace NowVN.WebAPI
             //services.AddSingleton<AppSettings>(appSettings);
             services.AddSingleton<IConfiguration>(Configuration);
 
-            services.AddScoped<IProductLogic, ProductLogic>();
             services.AddScoped<DbContext, NowVNSimulatorContext>();
             services.AddScoped<ExtensionSettings>();
-            services.AddScoped<ICustomerLogic, CustomerLogic>();
             services.AddScoped<JwtSecurityTokenProvider>();
+
+            //resolve logic instance
+            services.AddScoped<IProductLogic, ProductLogic>();
+            services.AddScoped<ICustomerLogic, CustomerLogic>();
+            services.AddScoped<IOrderLogic, OrderLogic>();
+            services.AddScoped<ICartLogic, CartLogic>();
+            services.AddScoped<IOrderDetailLogic, OrderDetailLogic>();
+
 
         }
 

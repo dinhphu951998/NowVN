@@ -30,7 +30,7 @@ namespace NowVN.Framework.CustomerLogic
 
         public string Authenticate(string username, string password)
         {
-            var customer = _context.Customer
+            var customer = dbContext.Customer
                                 .SingleOrDefault(x => x.Username == username);
 
             if(customer == null || !PasswordManipulation.VerifyPasswordHash(password, customer.PasswordHash, customer.PasswordSalt))

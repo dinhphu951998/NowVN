@@ -54,6 +54,7 @@ namespace NowVN.Framework.ViewModels.EntityViewModel
         public string Phone { get; set; }
         public string Fullname { get; set; }
         public string CustomerId { get; set; }
+        public List<OrderDetailsViewModel> OrderDetails { get; set; }
     }
 
     public partial class OrderDetailsViewModel
@@ -63,6 +64,7 @@ namespace NowVN.Framework.ViewModels.EntityViewModel
         public int? ProductId { get; set; }
         public double Price { get; set; }
         public int Quantity { get; set; }
+        public ProductViewModel Product { get; set; }
     }
 
     public partial class ImageViewModel

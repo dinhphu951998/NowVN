@@ -11,6 +11,22 @@ namespace NowVN.WebAPI.Controllers
     {
         private ExtensionSettings extensionSettings;
 
+        public string CurrentUserId
+        {
+            get
+            {
+                return HttpContext.User?.FindFirst(ClaimTypes.UserId)?.Value;
+            }
+        }
+
+        public string CurrentUsername
+        {
+            get
+            {
+                return HttpContext.User?.FindFirst(ClaimTypes.Username)?.Value;
+            }
+        }
+
         public NowVNController(ExtensionSettings extensionSettings)
         {
             this.extensionSettings = extensionSettings;

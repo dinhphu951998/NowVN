@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NowVN.Framework;
 using NowVN.Framework.Helpers;
 using NowVN.Framework.Models;
 using NowVN.Framework.ProductLogic;
@@ -16,6 +17,7 @@ namespace NowVN.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductsController : NowVNController
     {
         private IProductLogic productLogic;
@@ -26,17 +28,19 @@ namespace NowVN.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<dynamic> GetProduct(BasePagination paging)
+        [AllowAnonymous]
+        public dynamic GetProduct(BasePagination paging)
         {
             return ExecuteInMonitoring(() =>
             {
                 var products = this.productLogic.GetProduct(paging);
-                return products.Select( p => p.ToViewModel<ProductViewModel>());
+                return products.Select(p => p.ToViewModel<ProductViewModel>());
             });
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public dynamic GetProduct(int id)
         {
             return ExecuteInMonitoring(() =>
@@ -45,70 +49,34 @@ namespace NowVN.WebAPI.Controllers
             });
         }
 
-       [HttpPost]
-       [Authorize]
+        [HttpPost]
         public dynamic AddNewProduct(Product product)
         {
             return ExecuteInMonitoring(() =>
             {
-                product.CreatedTime = DateTime.UtcNow;
-                product.IsActive = true;
-
                 return productLogic.Add(product)?.ToViewModel<ProductViewModel>();
             });
         }
 
-        //// PUT: api/Products/5
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutProduct(int id, Product product)
-        //{
-        //    if (id != product.Id)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    _context.Entry(product).State = EntityState.Modified;
-
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!ProductExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return NoContent();
-        //}
+        // PUT: api/Products/5
+        [HttpPut("{id}")]
+        public dynamic PutProduct(int id, Product updatedProduct)
+        {
+            return ExecuteInMonitoring(() =>
+            {
+                return productLogic.UpdateProduct(id, updatedProduct);
+            });
+        }
 
 
+        [HttpDelete("{id}")]
+        public dynamic DeleteProduct(int id)
+        {
+            return ExecuteInMonitoring(() =>
+            {
+                return productLogic.DeleteProduct(id);
+            });
+        }
 
-        //// DELETE: api/Products/5
-        //[HttpDelete("{id}")]
-        //public async Task<ActionResult<Product>> DeleteProduct(int id)
-        //{
-        //    var product = await _context.Product.FindAsync(id);
-        //    if (product == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _context.Product.Remove(product);
-        //    await _context.SaveChangesAsync();
-
-        //    return product;
-        //}
-
-        //private bool ProductExists(int id)
-        //{
-        //    return _context.Product.Any(e => e.Id == id);
-        //}
     }
 }
